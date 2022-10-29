@@ -1,16 +1,16 @@
 const mongoose = require('mongoose');
-const host = 'localhost';
-const port = '27017';
-const db = 'hr';
+const consola = require('consola');
+
+const config = require('./variables');
 
 exports.mongoConnect = () => {
-  const mongoStringConnection = `mongodb://${host}:${port}/${db}`;
+  const mongoStringConnection = config.DATABASE_URI;
 
   mongoose.connect(mongoStringConnection);
   mongoose.Promise = global.Promise;
   const dbConnection = mongoose.connection;
-  dbConnection.on(
-    'error',
-    console.error.bind(console, 'Mongodb connection error')
-  );
+
+  dbConnection.on('connected', () => consola.success('Mongodb connected'));
+
+  dbConnection.on('error', () => consola.error('Mongodb connection error'));
 };
