@@ -1,9 +1,9 @@
 const express = require('express');
 const logger = require('morgan');
-const database = require('./config/database');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const database = require('./config/database');
 
 const app = express();
 
