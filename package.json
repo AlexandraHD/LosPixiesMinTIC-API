@@ -8,6 +8,8 @@
     "format": "prettier ./src/* --write"
   },
   "dependencies": {
+    "bcrypt": "^5.1.0",
+    "date-fns": "^2.29.3",
     "express": "~4.16.1",
     "mongoose": "^6.7.0",
     "mongoose-slug-generator": "^1.0.4",
