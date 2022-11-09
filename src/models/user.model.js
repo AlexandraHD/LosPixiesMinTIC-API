@@ -59,7 +59,11 @@ const userSchema = new Schema(
   },
   {
     toJSON: {
+      getters: true,
       versionKey: false,
+      transform(_doc, { _id: _, ...ret }) {
+        return ret;
+      },
     },
   }
 );
