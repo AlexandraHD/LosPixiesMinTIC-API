@@ -1,11 +1,32 @@
 const { Schema, Types, model } = require('mongoose');
-const { productSchema } = require('./product.model');
 
 const orderItemSchema = new Schema(
   {
     product: {
-      type: productSchema,
-      required: true,
+      name: {
+        type: String,
+        required: true,
+      },
+      slug: {
+        type: String,
+        required: true,
+      },
+      price: {
+        type: Types.Decimal128,
+        required: true,
+        get: (value) => {
+          if (typeof value !== 'undefined') return parseFloat(value.toString());
+          return value;
+        },
+      },
+      categories: {
+        type: [String],
+        required: true,
+      },
+      images: {
+        type: [String],
+        required: true,
+      },
     },
     quantity: {
       type: Number,
@@ -14,6 +35,10 @@ const orderItemSchema = new Schema(
   },
   {
     _id: false,
+    toJSON: {
+      getters: true,
+      versionKey: false,
+    },
     virtuals: {
       price: {
         get() {
@@ -40,6 +65,9 @@ const orderSchema = new Schema(
     toJSON: {
       getters: true,
       versionKey: false,
+      transform(doc, { _id: _, ...ret }) {
+        return ret;
+      },
     },
     virtuals: {
       total: {
