@@ -38,7 +38,6 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      select: false,
     },
     phone: {
       type: String,
@@ -61,7 +60,7 @@ const userSchema = new Schema(
     toJSON: {
       getters: true,
       versionKey: false,
-      transform(_doc, { _id: _, ...ret }) {
+      transform(_doc, { _id: _, password: __, ...ret }) {
         return ret;
       },
     },
@@ -81,6 +80,8 @@ userSchema.pre('save', async function (next) {
 userSchema.pre('findOneAndUpdate', async function (next) {
   try {
     const { password } = this.getUpdate();
+    if (!password) next();
+
     const hashedPassword = await bcrypt.hash(password, 10);
     this.set({ password: hashedPassword });
     next();
@@ -88,6 +89,15 @@ userSchema.pre('findOneAndUpdate', async function (next) {
     next(error);
   }
 });
+
+userSchema.methods.validatePassword = async function (plainText) {
+  try {
+    await bcrypt.compare(plainText, this.password);
+    return true;
+  } catch (error) {
+    throw new Error('Invalid Credentials');
+  }
+};
 
 const userModel = model('User', userSchema);
 
