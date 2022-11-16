@@ -23,6 +23,14 @@ const productSchema = new Schema(
     quantityInStock: {
       type: Number,
       required: true,
+      validate: {
+        validator(v) {
+          return v > 0;
+        },
+        message(prop) {
+          return 'Quantity cannot be less than 0';
+        },
+      },
     },
     description: {
       type: String,
