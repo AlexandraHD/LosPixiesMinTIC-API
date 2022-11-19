@@ -4,6 +4,8 @@ const config = {
   IS_PROD: process.env.NODE_ENV === 'production',
 
   DATABASE_URI: process.env.MONGO_URI,
+
+  JWT_SECRET: process.env.JWT_SECRET
 };
 
 module.exports = config;
