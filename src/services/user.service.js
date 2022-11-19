@@ -1,4 +1,5 @@
 const { ConflictError } = require('../utils/errors');
+const { createToken } = require('../utils/token');
 const { User } = require('../models');
 
 /**
@@ -52,7 +53,9 @@ async function signup(userData) {
 
   const user = new User(userData);
   await user.save();
-  return user;
+
+  const token = await createToken({ email: user.email });
+  return { token, user };
 }
 
 /**
@@ -64,7 +67,9 @@ async function login(userData) {
   if (!user) throw new Error('Invalid credentials');
 
   const isMatch = await user.validatePassword(userData.password);
-  if (isMatch) return user;
+
+  const token = await createToken({ email: user.email });
+  if (isMatch) return { token, user };
 
   throw new Error('Invalid credentials');
 }
@@ -83,10 +88,22 @@ async function update(userId, updatedData) {
   return updatedUser;
 }
 
+/**
+ *
+ * @param {string} userId
+ * @returns
+ */
+async function removeUser(userId) {
+  const deletedUser = await User.findByIdAndRemove(userId);
+
+  return deletedUser;
+}
+
 const userService = {
   signup,
   login,
   update,
+  remove: removeUser,
 };
 
 module.exports = userService;
