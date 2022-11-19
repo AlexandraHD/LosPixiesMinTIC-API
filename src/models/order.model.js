@@ -1,6 +1,8 @@
 const { Schema, Types, model, Error } = require('mongoose');
+const { OrderError } = require('../utils/errors');
 
 const Product = require('./product.model');
+const User = require('./user.model');
 
 const orderItemSchema = new Schema(
   {
@@ -83,18 +85,22 @@ const orderSchema = new Schema(
 
 orderSchema.pre('save', async function (next) {
   try {
-    await Promise.all(
-      this.products.map(async (item) => {
-        const p = await Product.findOne({ slug: item.product.slug });
-        p.quantityInStock -= item.quantity;
-        await p.save();
-      })
-    );
+    await Promise.all([
+      User.exists({ _id: this.user }).then(
+        (userExists) =>
+          !userExists && Promise.reject(new OrderError('User not found'))
+      ),
+
+      ...this.products.map(async (item) => {
+        const product = await Product.findOne({ slug: item.product.slug });
+        if (!product) throw new OrderError('Product not found');
+        product.quantityInStock -= item.quantity;
+        await product.save();
+      }),
+    ]);
+
     return next();
   } catch (error) {
-    if (error instanceof Error.ValidationError) {
-      return next(new Error(error.errors.quantityInStock.message));
-    }
     return next(error);
   }
 });

@@ -1,4 +1,6 @@
 const { Types } = require('mongoose');
+
+const { OrderError } = require('../utils/errors');
 const { Order, Product } = require('../models');
 
 /**
@@ -23,6 +25,10 @@ async function create(orderData) {
     Types.ObjectId(product.id)
   );
   const productList = await Product.find({ _id: { $in: productIds } });
+  if (productList.length !== productIds.length) {
+    throw new OrderError('Product not found');
+  }
+
   const products = productList.map((product) => ({
     name: product.name,
     slug: product.slug,

@@ -67,6 +67,11 @@ const userSchema = new Schema(
   }
 );
 
+userSchema.index(
+  { 'identification.type': 1, 'identification.id': 1 },
+  { unique: true }
+);
+
 userSchema.pre('save', async function (next) {
   try {
     const hashedPassword = await bcrypt.hash(this.password, 10);
@@ -92,8 +97,8 @@ userSchema.pre('findOneAndUpdate', async function (next) {
 
 userSchema.methods.validatePassword = async function (plainText) {
   try {
-    await bcrypt.compare(plainText, this.password);
-    return true;
+    const match = await bcrypt.compare(plainText, this.password);
+    return match;
   } catch (error) {
     throw new Error('Invalid Credentials');
   }

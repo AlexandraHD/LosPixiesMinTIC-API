@@ -25,7 +25,7 @@ const productSchema = new Schema(
       required: true,
       validate: {
         validator(v) {
-          return v > 0;
+          return v >= 0;
         },
         message(prop) {
           return 'Quantity cannot be less than 0';

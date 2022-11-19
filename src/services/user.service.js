@@ -1,3 +1,4 @@
+const { ConflictError } = require('../utils/errors');
 const { User } = require('../models');
 
 /**
@@ -47,7 +48,7 @@ const { User } = require('../models');
 async function signup(userData) {
   const alreadyExists = await User.findOne({ email: userData.email });
 
-  if (alreadyExists) throw new Error('User already exists');
+  if (alreadyExists) throw new ConflictError('User already exists');
 
   const user = new User(userData);
   await user.save();
