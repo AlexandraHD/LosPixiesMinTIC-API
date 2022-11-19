@@ -50,8 +50,20 @@ async function create(orderData) {
   return order;
 }
 
+/**
+ * @param {*} userId
+ * @returns
+ */
+async function findOrdersByUser(userId) {
+  const orders = await Order.find({
+    user: userId,
+  });
+  return orders;
+}
+
 const orderService = {
   create,
+  findOrdersByUser,
 };
 
 module.exports = orderService;
