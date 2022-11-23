@@ -44,7 +44,8 @@ async function findOrders(req, res, next) {
     const orders = await Order.findOrdersByUser(id);
     return res.json(orders);
   } catch (error) {
-    return next(error);
+    const err = errorHandler(error);
+    return next(err);
   }
 }
 
