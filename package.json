@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www",
+    "dev": "nodemon -r dotenv/config ./bin/www",
     "format": "prettier ./src/* --write"
   },
   "dependencies": {
@@ -17,9 +17,12 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.0",
     "mongoose-slug-generator": "^1.0.4",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "swagger-jsdoc": "^6.2.5",
+    "swagger-ui-express": "^4.6.0"
   },
   "devDependencies": {
+    "dotenv": "^16.0.3",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1"
   }
