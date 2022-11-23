@@ -26,7 +26,7 @@ async function isAuth(req, _res, next) {
 
     return next();
   } catch (error) {
-    return next(error);
+    return next(Boom.unauthorized('Invalid credentials'));
   }
 }
 
