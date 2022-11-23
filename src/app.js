@@ -7,9 +7,15 @@ const usersRouter = require('./routes/users.router');
 const { Error, NotFound } = require('./middleware');
 const database = require('./config/database');
 const indexRouter = require('./routes/index');
+const { CLIENT } = require('./config/variables');
 
 const app = express();
+const corsOptions = {
+  origin: CLIENT,
+  optionsSuccessStatus: 200, 
+};
 
+app.use(cors(corsOptions));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
